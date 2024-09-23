@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'RegistrarEvento.dart';
 
 class Evento {
   final int idEvento;
@@ -56,14 +57,14 @@ class Evento {
   }
 }
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+class ListarEventAdmin extends StatefulWidget {
+  const ListarEventAdmin({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<ListarEventAdmin> createState() => _ListarEventAdminState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _ListarEventAdminState extends State<ListarEventAdmin> {
   late Future<List<Evento>> eventosActivos;
   String vistaActual = "eventos"; // Para controlar qué vista se muestra
 
@@ -211,7 +212,7 @@ class _HomePageState extends State<HomePage> {
                       });
                     },
                     child: const Text(
-                      'Eventos Disponibles',
+                      'Eventos Publicados',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 16,
@@ -237,7 +238,7 @@ class _HomePageState extends State<HomePage> {
                       });
                     },
                     child: const Text(
-                      'Mis Eventos',
+                      'Eventos Registrados',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 16,
@@ -258,6 +259,27 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
 
+    //Botón para realizar el registro de evento :)
+    floatingActionButton: Padding(
+      padding: const EdgeInsets.only(right: 20, bottom: 120),
+      child: Align(
+        alignment: Alignment.bottomRight,
+        child: FloatingActionButton(
+          onPressed: () {
+            print("Añadir nuevo evento");
+            Navigator.push(
+              context, 
+              MaterialPageRoute(builder: (context)=> RegistrarEvento()),
+            );
+          },
+          child: Icon(Icons.add, color:Colors.white),
+          backgroundColor: Color.fromRGBO(158, 17, 15, 1),
+          shape: CircleBorder(),
+        ),
+      ),
+    ),
+    floatingActionButtonLocation: FloatingActionButtonLocation.endDocked, 
+      
       // NavigationBar
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 20),
