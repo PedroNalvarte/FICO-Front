@@ -21,4 +21,8 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
+    - web/icons/1.png
+    - web/icons/microsoftlogo (1).png
+    - web/icons/incorrecto.png
     - web/icons/LogoFico.png
+
