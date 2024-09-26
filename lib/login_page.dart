@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'homepage.dart';
+import 'homepage.dart'; // Página del cliente
+import 'listarEventosAdmin.dart'; // Página del admin
+import 'reset_mail_page.dart'; // Página de recuperación de contraseña
 
 class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
+
   @override
   _LoginPageState createState() => _LoginPageState();
 }
@@ -17,8 +21,7 @@ class _LoginPageState extends State<LoginPage> {
     final String email = _emailController.text;
     final String password = _passwordController.text;
 
-    final url =
-        Uri.parse('https://fico-back.onrender.com/auth/login/$email/$password');
+    final url = Uri.parse('https://fico-back.onrender.com/auth/login/$email/$password');
 
     try {
       final response = await http.get(url);
@@ -27,16 +30,28 @@ class _LoginPageState extends State<LoginPage> {
         final result = json.decode(response.body);
 
         setState(() {
-          if (result == "Usuario no existe") {
-            _showErrorDialog("Usuario no existe");
-          } else if (result == "Contraseña incorrecta") {
-            _showErrorDialogWithImage("Contraseña incorrecta");
-          } else {
-            _message = 'Bienvenido, $result';
+          if (result['id_rol'] == 1) {
+            // Redirigir a la página del admin
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => HomePage()),
+              MaterialPageRoute(builder: (context) => const ListarEventAdmin()),
             );
+          } else if (result['id_rol'] == 2) {
+            // Redirigir a la página del cliente
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const HomePage()),
+            );
+          }
+        });
+      } else if (response.statusCode == 400) {
+        // Si el backend devuelve 400, manejamos los errores de manera separada
+        final result = json.decode(response.body);
+        setState(() {
+          if (result['error'] == "Usuario no existe") {
+            _showErrorDialog("Usuario no existe");
+          } else if (result['error'] == "Contraseña incorrecta") {
+            _showErrorDialogWithImage("Contraseña incorrecta");
           }
         });
       } else {
@@ -51,23 +66,23 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  // Función para mostrar el pop-up de error para "Usuario no existe"
+  // Mostrar diálogo de error si el usuario no existe
   void _showErrorDialog(String message) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Center(child: Text("Error")),
+          title: const Center(child: Text("Error")),
           content: Text(
             message,
-            textAlign: TextAlign.center, // Centra el texto del contenido
+            textAlign: TextAlign.center,
           ),
           actions: [
             Center(
               child: TextButton(
-                child: Text("OK"),
+                child: const Text("OK"),
                 onPressed: () {
-                  Navigator.of(context).pop(); // Cerrar el diálogo
+                  Navigator.of(context).pop();
                 },
               ),
             ),
@@ -77,23 +92,21 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  // Función para mostrar el pop-up con la imagen para "Contraseña incorrecta"
+  // Mostrar diálogo de error si la contraseña es incorrecta
   void _showErrorDialogWithImage(String message) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Center(child: Text("Error")),
+          title: const Center(child: Text("Error")),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Añadir la imagen de "incorrecto.png"
               Image.asset(
-                'web/icons/incorrecto.png', // Ruta de la imagen
-                height: 80, // Ajusta el tamaño de la imagen si es necesario
+                'web/icons/incorrecto.png',
+                height: 80,
               ),
-              SizedBox(height: 20),
-              // Mensaje centrado
+              const SizedBox(height: 20),
               Text(
                 message,
                 textAlign: TextAlign.center,
@@ -103,9 +116,9 @@ class _LoginPageState extends State<LoginPage> {
           actions: [
             Center(
               child: TextButton(
-                child: Text("OK"),
+                child: const Text("OK"),
                 onPressed: () {
-                  Navigator.of(context).pop(); // Cerrar el diálogo
+                  Navigator.of(context).pop();
                 },
               ),
             ),
@@ -126,11 +139,10 @@ class _LoginPageState extends State<LoginPage> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               SizedBox(height: size.height * 0.1),
-              // Logo de la parte superior centrado
               Center(
                 child: Image.asset(
-                  'web/icons/1.png', // Aquí va tu logo de FICO
-                  height: 200, // Ajusta el tamaño del logo de FICO
+                  'web/icons/1.png',
+                  height: 200,
                 ),
               ),
               SizedBox(height: size.height * 0.05),
@@ -142,8 +154,7 @@ class _LoginPageState extends State<LoginPage> {
                   color: Colors.grey[800],
                 ),
               ),
-              SizedBox(height: 30),
-              // Campo de correo electrónico
+              const SizedBox(height: 30),
               TextField(
                 controller: _emailController,
                 decoration: InputDecoration(
@@ -156,8 +167,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
               ),
-              SizedBox(height: 20),
-              // Campo de contraseña
+              const SizedBox(height: 20),
               TextField(
                 controller: _passwordController,
                 decoration: InputDecoration(
@@ -171,68 +181,61 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 obscureText: true,
               ),
-              SizedBox(height: 30),
-              // Botón de iniciar sesión
+              const SizedBox(height: 30),
               ElevatedButton(
                 onPressed: _login,
-                child: Text(
-                  'Iniciar Sesión',
-                  style: TextStyle(
-                      fontSize: 18,
-                      color: Colors.white), // Asegura que el texto sea blanco
-                ),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFFB71C1C), // Color rojo del botón
-                  padding: EdgeInsets.symmetric(horizontal: 100, vertical: 15),
+                  backgroundColor: const Color(0xFFB71C1C),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 100, vertical: 15),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),
+                child: const Text(
+                  'Iniciar Sesión',
+                  style: TextStyle(fontSize: 18, color: Colors.white),
+                ),
               ),
-              SizedBox(height: 30),
+              const SizedBox(height: 30),
               ElevatedButton(
                 onPressed: () {
                   // Lógica para iniciar sesión con Microsoft
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.white, // Fondo blanco
-                  padding: EdgeInsets.symmetric(
-                      vertical: 15,
-                      horizontal:
-                          30), // Aumentamos el padding para hacerlo más grande
+                  backgroundColor: Colors.white,
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 15, horizontal: 30),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
-                    side: BorderSide(color: Colors.grey),
+                    side: const BorderSide(color: Colors.grey),
                   ),
                 ),
                 child: Row(
-                  mainAxisSize: MainAxisSize
-                      .min, // Para que el ancho se ajuste al contenido
-                  mainAxisAlignment:
-                      MainAxisAlignment.center, // Centrar el contenido
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Image.asset(
-                      'web/icons/microsoftlogo (1).png', // Ruta de la imagen
-                      height: 32, // Aumenta el tamaño del ícono a 32px
+                      'web/icons/microsoftlogo (1).png',
+                      height: 32,
                     ),
                   ],
                 ),
               ),
-              SizedBox(height: 10),
-              Text('- O -'),
-              SizedBox(height: 10),
-              // Texto de crear cuenta
+              const SizedBox(height: 10),
+              const Text('- O -'),
+              const SizedBox(height: 10),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text("¿Aún no tienes cuenta?",
                       style: TextStyle(color: Colors.grey[600])),
-                  SizedBox(width: 5),
+                  const SizedBox(width: 5),
                   GestureDetector(
                     onTap: () {
                       // Lógica para crear una cuenta
                     },
-                    child: Text(
+                    child: const Text(
                       "Crear Cuenta",
                       style: TextStyle(
                         color: Color(0xFFB71C1C),
@@ -242,7 +245,26 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ],
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          ResetMailPage(), // Redirige a la página de recuperación de contraseña
+                    ),
+                  );
+                },
+                child: const Text(
+                  "Recuperar Contraseña",
+                  style: TextStyle(
+                    color: Colors.blue,
+                    decoration: TextDecoration.underline,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
               Text(_message),
             ],
           ),
