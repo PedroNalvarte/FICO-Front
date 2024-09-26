@@ -137,7 +137,7 @@ class _HomePageState extends State<HomePage> {
                         Text('Fecha: ${evento.fechaFormateada}'),
                         Text('Hora: ${evento.hora}'),
                         Text('Aforo: ${evento.aforo}'),
-                        Text('Costo de la entrada: \S/. ${evento.costo}'),
+                        Text('Costo: \S/. ${evento.costo}'),
                         Text('Entradas vendidas: ${evento.entradasVendidas}'),
                       ],
                     ),
