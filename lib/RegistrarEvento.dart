@@ -8,6 +8,7 @@ import 'package:http_parser/http_parser.dart';
 import 'package:mime/mime.dart'; 
 import 'package:flutter/foundation.dart'; 
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 class RegistrarEvento extends StatefulWidget {
   @override
   _RegistrarEventoState createState() => _RegistrarEventoState();
@@ -31,8 +32,16 @@ class _RegistrarEventoState extends State<RegistrarEvento> {
   @override
   void initState() {
     super.initState();
+    _loadUserId();
   }
 
+  Future<void> _loadUserId() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  String userId = prefs.getString('user_id') ?? '';
+    setState(() {
+      creadorController.text = userId; // Asignar el ID del usuario automáticamente
+    });
+  }
   // Función para seleccionar una imagen
   Future<void> _pickImage() async {
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
@@ -131,7 +140,6 @@ class _RegistrarEventoState extends State<RegistrarEvento> {
       request.fields['lugar'] = lugarController.text;
       request.fields['aforo'] = aforoController.text;
       request.fields['costo'] = costoController.text;
-      request.fields['creador'] = creadorController.text;
       request.fields['fecha'] = fechaController.text;
 
       try {
@@ -281,30 +289,6 @@ class _RegistrarEventoState extends State<RegistrarEvento> {
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Por favor ingresa el costo';
-                  }
-                  return null;
-                },
-              ),
-
-              SizedBox(height: 16),
-              //Campo Creador
-              TextFormField(
-                controller: creadorController,
-                decoration: InputDecoration(
-
-                labelText: 'Creador',
-                labelStyle: TextStyle(color: Colors.grey[700]),
-                enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey[300]!, width: 1.0),
-                  ),
-                  
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: const Color.fromRGBO(158, 17, 15, 1), width: 2.0),
-                  ),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Por favor ingresa el ID del creador';
                   }
                   return null;
                 },
