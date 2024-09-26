@@ -42,9 +42,9 @@ class _RegistrarEventoState extends State<RegistrarEvento> {
             ),
           ),
       ),
-      body: Center(
+      body: const Center(
         // Aquí va el pop up para registrar eventos
-        child: const Text("Contenido para registrar eventos"),
+        child: Text("Contenido para registrar eventos"),
       ),
 
 

@@ -4,6 +4,8 @@ import 'dart:convert';
 import 'homepage.dart';
 
 class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
+
   @override
   _LoginPageState createState() => _LoginPageState();
 }
@@ -35,7 +37,7 @@ class _LoginPageState extends State<LoginPage> {
             _message = 'Bienvenido, $result';
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => HomePage()),
+              MaterialPageRoute(builder: (context) => const HomePage()),
             );
           }
         });
@@ -57,7 +59,7 @@ class _LoginPageState extends State<LoginPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Center(child: Text("Error")),
+          title: const Center(child: Text("Error")),
           content: Text(
             message,
             textAlign: TextAlign.center, // Centra el texto del contenido
@@ -65,7 +67,7 @@ class _LoginPageState extends State<LoginPage> {
           actions: [
             Center(
               child: TextButton(
-                child: Text("OK"),
+                child: const Text("OK"),
                 onPressed: () {
                   Navigator.of(context).pop(); // Cerrar el diálogo
                 },
@@ -83,7 +85,7 @@ class _LoginPageState extends State<LoginPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Center(child: Text("Error")),
+          title: const Center(child: Text("Error")),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -92,7 +94,7 @@ class _LoginPageState extends State<LoginPage> {
                 'web/icons/incorrecto.png', // Ruta de la imagen
                 height: 80, // Ajusta el tamaño de la imagen si es necesario
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               // Mensaje centrado
               Text(
                 message,
@@ -103,7 +105,7 @@ class _LoginPageState extends State<LoginPage> {
           actions: [
             Center(
               child: TextButton(
-                child: Text("OK"),
+                child: const Text("OK"),
                 onPressed: () {
                   Navigator.of(context).pop(); // Cerrar el diálogo
                 },
@@ -142,7 +144,7 @@ class _LoginPageState extends State<LoginPage> {
                   color: Colors.grey[800],
                 ),
               ),
-              SizedBox(height: 30),
+              const SizedBox(height: 30),
               // Campo de correo electrónico
               TextField(
                 controller: _emailController,
@@ -156,7 +158,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               // Campo de contraseña
               TextField(
                 controller: _passwordController,
@@ -171,38 +173,38 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 obscureText: true,
               ),
-              SizedBox(height: 30),
+              const SizedBox(height: 30),
               // Botón de iniciar sesión
               ElevatedButton(
                 onPressed: _login,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFFB71C1C), // Color rojo del botón
+                  padding: const EdgeInsets.symmetric(horizontal: 100, vertical: 15),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
                 child: Text(
                   'Iniciar Sesión',
                   style: TextStyle(
                       fontSize: 18,
                       color: Colors.white), // Asegura que el texto sea blanco
                 ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFFB71C1C), // Color rojo del botón
-                  padding: EdgeInsets.symmetric(horizontal: 100, vertical: 15),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
               ),
-              SizedBox(height: 30),
+              const SizedBox(height: 30),
               ElevatedButton(
                 onPressed: () {
                   // Lógica para iniciar sesión con Microsoft
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.white, // Fondo blanco
-                  padding: EdgeInsets.symmetric(
+                  padding: const EdgeInsets.symmetric(
                       vertical: 15,
                       horizontal:
                           30), // Aumentamos el padding para hacerlo más grande
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
-                    side: BorderSide(color: Colors.grey),
+                    side: const BorderSide(color: Colors.grey),
                   ),
                 ),
                 child: Row(
@@ -218,21 +220,21 @@ class _LoginPageState extends State<LoginPage> {
                   ],
                 ),
               ),
-              SizedBox(height: 10),
-              Text('- O -'),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
+              const Text('- O -'),
+              const SizedBox(height: 10),
               // Texto de crear cuenta
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text("¿Aún no tienes cuenta?",
                       style: TextStyle(color: Colors.grey[600])),
-                  SizedBox(width: 5),
+                  const SizedBox(width: 5),
                   GestureDetector(
                     onTap: () {
                       // Lógica para crear una cuenta
                     },
-                    child: Text(
+                    child: const Text(
                       "Crear Cuenta",
                       style: TextStyle(
                         color: Color(0xFFB71C1C),
@@ -242,7 +244,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ],
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               Text(_message),
             ],
           ),

@@ -106,7 +106,7 @@ class _ListarEventAdminState extends State<ListarEventAdmin> {
             return Container(
               margin: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                border: Border(
+                border: const Border(
                   left: BorderSide(width: 10, color: Color.fromRGBO(158, 17, 15, 1),), // Franja roja al costado
                 ),
                 color: Colors.white,
@@ -115,7 +115,7 @@ class _ListarEventAdminState extends State<ListarEventAdmin> {
                     color: Colors.grey.withOpacity(0.5),
                     spreadRadius: 1,
                     blurRadius: 5,
-                    offset: Offset(0, 3), // changes position of shadow
+                    offset: const Offset(0, 3), // changes position of shadow
                   ),
                 ],
               ),
@@ -125,7 +125,7 @@ class _ListarEventAdminState extends State<ListarEventAdmin> {
                   // Imagen del evento
                   evento.imagen != null ? 
                   Image.network(evento.imagen!, height: 150, width: double.infinity, fit: BoxFit.cover) :
-                  Container(height: 150, color: Colors.grey, alignment: Alignment.center, child: Icon(Icons.image_not_supported, size: 50)),
+                  Container(height: 150, color: Colors.grey, alignment: Alignment.center, child: const Icon(Icons.image_not_supported, size: 50)),
                   
                   // Detalles del evento
                   Padding(
@@ -133,7 +133,7 @@ class _ListarEventAdminState extends State<ListarEventAdmin> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(evento.nombreEvento, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                        Text(evento.nombreEvento, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                         Text('Lugar: ${evento.lugar}'),
                         Text('Fecha: ${evento.fechaFormateada}'),
                         Text('Hora: ${evento.hora}'),
@@ -269,12 +269,12 @@ class _ListarEventAdminState extends State<ListarEventAdmin> {
             print("Añadir nuevo evento");
             Navigator.push(
               context, 
-              MaterialPageRoute(builder: (context)=> RegistrarEvento()),
+              MaterialPageRoute(builder: (context)=> const RegistrarEvento()),
             );
           },
+          backgroundColor: const Color.fromRGBO(158, 17, 15, 1),
+          shape: const CircleBorder(),
           child: Icon(Icons.add, color:Colors.white),
-          backgroundColor: Color.fromRGBO(158, 17, 15, 1),
-          shape: CircleBorder(),
         ),
       ),
     ),
