@@ -25,16 +25,25 @@ class _ResetMailPageState extends State<ResetMailPage> {
       if (response.statusCode == 200) {
         final result = json.decode(response.body);
 
-        // Redirigir a ValidateCodePage con el email y código enviado
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ValidateCodePage(
-              email: email,
-              codigoEnviado: result['codigo'],
+        if (result.containsKey('codigo')) {
+          // Redirigir a ValidateCodePage con el email y código enviado
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ValidateCodePage(
+                email: email,
+                codigoEnviado: result['codigo'],
+              ),
             ),
-          ),
-        );
+          );
+        } else {
+          setState(() {
+            _message = 'Error al enviar el código. Inténtalo de nuevo.';
+          });
+        }
+      } else if (response.statusCode == 400) {
+        // Mostrar modal si la cuenta no existe
+        _showErrorDialog('La cuenta no existe');
       } else {
         setState(() {
           _message = 'Error al enviar el código. Inténtalo de nuevo.';
@@ -45,6 +54,60 @@ class _ResetMailPageState extends State<ResetMailPage> {
         _message = 'Error de red. Inténtalo de nuevo.';
       });
     }
+  }
+
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          title: Center(
+            child: Text(
+              "Error",
+              style: TextStyle(
+                color: const Color(0xFFB71C1C),
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const SizedBox(height: 10),
+              Text(
+                message,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.grey[800],
+                ),
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFFB71C1C),
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 15, horizontal: 60),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop(); // Cerrar el diálogo
+                },
+                child: const Text(
+                  "OK",
+                  style: TextStyle(color: Colors.white, fontSize: 16),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -86,7 +149,6 @@ class _ResetMailPageState extends State<ResetMailPage> {
                   color: Color(0xFF757575),
                 ),
               ),
-
               const SizedBox(height: 30),
               // Botón de enviar código
               ElevatedButton(
