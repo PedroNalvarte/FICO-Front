@@ -21,8 +21,7 @@ class _LoginPageState extends State<LoginPage> {
     final String email = _emailController.text;
     final String password = _passwordController.text;
 
-    final url =
-        Uri.parse('https://fico-back.onrender.com/auth/login/$email/$password');
+    final url = Uri.parse('https://fico-back.onrender.com/auth/login/$email/$password');
 
     try {
       final response = await http.get(url);
@@ -31,23 +30,28 @@ class _LoginPageState extends State<LoginPage> {
         final result = json.decode(response.body);
 
         setState(() {
-          if (result == "Usuario no existe") {
+          if (result['id_rol'] == 1) {
+            // Redirigir a la página del admin
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const ListarEventAdmin()),
+            );
+          } else if (result['id_rol'] == 2) {
+            // Redirigir a la página del cliente
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const HomePage()),
+            );
+          }
+        });
+      } else if (response.statusCode == 400) {
+        // Si el backend devuelve 400, manejamos los errores de manera separada
+        final result = json.decode(response.body);
+        setState(() {
+          if (result['error'] == "Usuario no existe") {
             _showErrorDialog("Usuario no existe");
-          } else if (result == "Contraseña incorrecta") {
+          } else if (result['error'] == "Contraseña incorrecta") {
             _showErrorDialogWithImage("Contraseña incorrecta");
-          } else {
-            // Redirigir según el rol del usuario
-            if (result['id_rol'] == 1) {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => const ListarEventAdmin()),
-              );
-            } else if (result['id_rol'] == 2) {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => const HomePage()),
-              );
-            }
           }
         });
       } else {
@@ -99,7 +103,7 @@ class _LoginPageState extends State<LoginPage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Image.asset(
-                'web/icons/incorrecto.png', 
+                'web/icons/incorrecto.png',
                 height: 80,
               ),
               const SizedBox(height: 20),
@@ -182,16 +186,15 @@ class _LoginPageState extends State<LoginPage> {
                 onPressed: _login,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFFB71C1C),
-                  padding: const EdgeInsets.symmetric(horizontal: 100, vertical: 15),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 100, vertical: 15),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),
                 child: const Text(
                   'Iniciar Sesión',
-                  style: TextStyle(
-                      fontSize: 18,
-                      color: Colors.white),
+                  style: TextStyle(fontSize: 18, color: Colors.white),
                 ),
               ),
               const SizedBox(height: 30),
@@ -201,8 +204,8 @@ class _LoginPageState extends State<LoginPage> {
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 15, horizontal: 30),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 15, horizontal: 30),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                     side: const BorderSide(color: Colors.grey),
@@ -248,7 +251,8 @@ class _LoginPageState extends State<LoginPage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => ResetMailPage(), // Redirige a la página de recuperación de contraseña
+                      builder: (context) =>
+                          ResetMailPage(), // Redirige a la página de recuperación de contraseña
                     ),
                   );
                 },

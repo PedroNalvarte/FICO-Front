@@ -22,14 +22,35 @@ class _ValidateCodePageState extends State<ValidateCodePage> {
         barrierDismissible: false, // Evita cerrar el modal al tocar fuera de él
         builder: (BuildContext context) {
           return AlertDialog(
-            title: const Center(child: Text("Éxito")),
-            content: const Text("Código correcto. Redirigiendo..."),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15),
+            ),
+            title: const Center(
+              child: Text(
+                "Éxito",
+                style: TextStyle(
+                  color: Color(0xFFB71C1C),
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const SizedBox(height: 10),
+                const Text(
+                  "Código correcto. Redirigiendo...",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 16, color: Colors.black),
+                ),
+              ],
+            ),
           );
         },
       );
 
       // Redirigir después de 3 segundos
-      Future.delayed(Duration(seconds: 3), () {
+      Future.delayed(const Duration(seconds: 3), () {
         Navigator.of(context).pop(); // Cerrar el modal
         Navigator.pushReplacement(
           context,
@@ -44,16 +65,47 @@ class _ValidateCodePageState extends State<ValidateCodePage> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: const Text("Error"),
-            content: const Text("Código incorrecto. Inténtalo de nuevo."),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop(); // Cerrar el diálogo
-                },
-                child: const Text("OK"),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15),
+            ),
+            title: const Center(
+              child: Text(
+                "Error",
+                style: TextStyle(
+                  color: Color(0xFFB71C1C),
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ],
+            ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const SizedBox(height: 10),
+                const Text(
+                  "Código incorrecto. Inténtalo de nuevo.",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 16, color: Colors.black),
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(); // Cerrar el diálogo
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFFB71C1C),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 15, horizontal: 60),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  child: const Text(
+                    "OK",
+                    style: TextStyle(color: Colors.white, fontSize: 16),
+                  ),
+                ),
+              ],
+            ),
           );
         },
       );

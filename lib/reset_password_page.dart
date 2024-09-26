@@ -18,7 +18,8 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
   Future<void> _resetPassword() async {
     final String newPassword = _passwordController.text;
 
-    final url = Uri.parse('https://fico-back.onrender.com/auth/resetPassword/${widget.email}/$newPassword');
+    final url = Uri.parse(
+        'https://fico-back.onrender.com/auth/resetPassword/${widget.email}/$newPassword');
 
     try {
       final response = await http.post(url);
@@ -32,20 +33,51 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
             barrierDismissible: false, // Evita cerrar el modal tocando fuera de él
             builder: (BuildContext context) {
               return AlertDialog(
-                title: const Text("Éxito"),
-                content: const Text("Contraseña cambiada con éxito."),
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(builder: (context) => LoginPage()),
-                        (Route<dynamic> route) => false,
-                      );
-                    },
-                    child: const Text('OK'),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                title: const Center(
+                  child: Text(
+                    "Éxito",
+                    style: TextStyle(
+                      color: Color(0xFFB71C1C),
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ],
+                ),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const SizedBox(height: 10),
+                    const Text(
+                      "Contraseña cambiada con éxito.",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 16, color: Colors.black),
+                    ),
+                    const SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(builder: (context) => LoginPage()),
+                          (Route<dynamic> route) => false,
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFFB71C1C),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 15, horizontal: 60),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      child: const Text(
+                        'OK',
+                        style: TextStyle(color: Colors.white, fontSize: 16),
+                      ),
+                    ),
+                  ],
+                ),
               );
             },
           );
@@ -117,7 +149,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
             const SizedBox(height: 20),
             Text(
               _message,
-              style: TextStyle(color: Colors.red),
+              style: const TextStyle(color: Colors.red),
             ),
           ],
         ),
