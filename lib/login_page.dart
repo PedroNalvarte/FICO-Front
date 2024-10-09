@@ -34,15 +34,19 @@ class _LoginPageState extends State<LoginPage> {
             // Redirigir a la página del admin
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => const ListarEventAdmin()),
+              MaterialPageRoute(builder: (context) => ListarEventAdmin(email: email)),
             );
           } else if (result['id_rol'] == 2) {
             // Redirigir a la página del cliente
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => const HomePage()),
+              MaterialPageRoute(builder: (context) => HomePage(email: email)),
             );
+          } else {
+            // Maneja otros casos si el rol no es 1 ni 2
+            print('Rol no esperado: ${result['id_rol']}');
           }
+
         });
       } else if (response.statusCode == 400) {
         // Si el backend devuelve 400, manejamos los errores de manera separada

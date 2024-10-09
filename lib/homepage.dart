@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'Perfil.dart';
 
 class Evento {
   final int idEvento;
@@ -57,7 +58,9 @@ class Evento {
 }
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  final String email;
+
+  const HomePage({Key? key, required this.email}) : super(key: key);
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -259,6 +262,7 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
 
+      
       // NavigationBar
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 20),
@@ -266,7 +270,24 @@ class _HomePageState extends State<HomePage> {
           borderRadius: BorderRadius.circular(50),
           child: GNav(
             onTabChange: (index) {
-              print(index);
+              setState(() {
+                if (index == 0) { // Eventos
+                  vistaActual = "eventos";
+                } else if (index == 1) { // Reservas
+                  vistaActual = "reservas"; // Asumiendo que esto manejará otra vista
+                } else if (index == 2) { // Equipos
+                  vistaActual = "equipos"; // Asumiendo que esto manejará otra vista
+                } else if (index == 3) { // Perfil
+                  vistaActual = "perfil"; // Actualizar la vistaActual
+                  // Navegar a la página del perfil
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => PerfilPage(emailUsuario: widget.email),
+                    ),
+                  );
+                }
+              });
             },
             backgroundColor: const Color.fromRGBO(158, 17, 15, 1),
             color: Colors.white,
@@ -283,6 +304,7 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
+
     );
   }
 }
