@@ -3,6 +3,7 @@ import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'Perfil.dart';
+import 'VisualizarCubiculosDisponibles.dart';
 
 class Evento {
   final int idEvento;
@@ -68,16 +69,16 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late Future<List<Evento>> eventosActivos;
-  String vistaActual = "eventos"; // Para controlar qué vista se muestra
+  int _selectedIndex = 0;
 
   @override
   void initState() {
     super.initState();
-    eventosActivos = fetchEventosActivos(); // Inicializamos la llamada a la API
+    eventosActivos = fetchEventosActivos(); 
   }
 
   Future<List<Evento>> fetchEventosActivos() async {
-    const String apiUrl = 'https://fico-back.onrender.com/events/getActive'; // URL de la API
+    const String apiUrl = 'https://fico-back.onrender.com/events/getActive'; 
 
     final response = await http.get(Uri.parse(apiUrl));
     if (response.statusCode == 200) {
@@ -89,222 +90,147 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildEventosList() {
-  return FutureBuilder<List<Evento>>(
-    future: eventosActivos,
-    builder: (context, snapshot) {
-      if (snapshot.connectionState == ConnectionState.waiting) {
-        return const Center(child: CircularProgressIndicator());
-      } else if (snapshot.hasError) {
-        return Center(child: Text('Error: ${snapshot.error}'));
-      } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-        return const Center(child: Text('No hay eventos activos actualmente.'));
-      } else {
-        final eventos = snapshot.data!;
-        return ListView.builder(
-          physics: const BouncingScrollPhysics(),
-          itemCount: eventos.length,
-          itemBuilder: (context, index) {
-            final evento = eventos[index];
-            return Container(
-              margin: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                border: Border(
-                  left: BorderSide(width: 10, color: Color.fromRGBO(158, 17, 15, 1),), // Franja roja al costado
-                ),
-                color: Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.5),
-                    spreadRadius: 1,
-                    blurRadius: 5,
-                    offset: Offset(0, 3), // changes position of shadow
+    return FutureBuilder<List<Evento>>(
+      future: eventosActivos,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return const Center(child: Text('No hay eventos activos actualmente.'));
+        } else {
+          final eventos = snapshot.data!;
+          return ListView.builder(
+            physics: const BouncingScrollPhysics(),
+            itemCount: eventos.length,
+            itemBuilder: (context, index) {
+              final evento = eventos[index];
+              return Container(
+                margin: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  border: Border(
+                    left: BorderSide(width: 10, color: Color.fromRGBO(158, 17, 15, 1)),
                   ),
-                ],
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  // Imagen del evento
-                  evento.imagen != null ? 
-                  Image.network(evento.imagen!, height: 150, width: double.infinity, fit: BoxFit.cover) :
-                  Container(height: 150, color: Colors.grey, alignment: Alignment.center, child: Icon(Icons.image_not_supported, size: 50)),
-                  
-                  // Detalles del evento
-                  Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(evento.nombreEvento, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                        Text('Lugar: ${evento.lugar}'),
-                        Text('Fecha: ${evento.fechaFormateada}'),
-                        Text('Hora: ${evento.hora}'),
-                        Text('Aforo: ${evento.aforo}'),
-                        Text('Costo de la entrada: \S/. ${evento.costo}'),
-                        Text('Entradas vendidas: ${evento.entradasVendidas}'),
-                      ],
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.5),
+                      spreadRadius: 1,
+                      blurRadius: 5,
+                      offset: Offset(0, 3), 
                     ),
-                  ),
-                ],
-              ),
-            );
-          },
-        );
-      }
-    },
-  );
-}
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    evento.imagen != null 
+                        ? Image.network(evento.imagen!, height: 150, width: double.infinity, fit: BoxFit.cover) 
+                        : Container(height: 150, color: Colors.grey, alignment: Alignment.center, child: Icon(Icons.image_not_supported, size: 50)),
+                    Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(evento.nombreEvento, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                          Text('Lugar: ${evento.lugar}'),
+                          Text('Fecha: ${evento.fechaFormateada}'),
+                          Text('Hora: ${evento.hora}'),
+                          Text('Aforo: ${evento.aforo}'),
+                          Text('Costo de la entrada: \S/. ${evento.costo}'),
+                          Text('Entradas vendidas: ${evento.entradasVendidas}'),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          );
+        }
+      },
+    );
+  }
 
+  void _onTabSelected(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+
+    if (index == 1) { // Navegar a Reservas
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => VisualizarCubiculosDisponibles(emailUsuario: widget.email),
+        ),
+      );
+    } else if (index == 2) { // Navegar a Perfil
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => PerfilPage(emailUsuario: widget.email),
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.white,
-          elevation: 0,
-          automaticallyImplyLeading: false,
-          toolbarHeight: 150,
-          flexibleSpace: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Center(
-                        child: Image.asset(
-                          'web/icons/LogoFico.png',
-                          height: 110,
-                        ),
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        automaticallyImplyLeading: false,
+        toolbarHeight: 150,
+        flexibleSpace: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: Center(
+                      child: Image.asset(
+                        'web/icons/LogoFico.png',
+                        height: 110,
                       ),
                     ),
-                    IconButton(
-                      icon: const Icon(Icons.notifications, color: Colors.black),
-                      onPressed: () {},
-                    ),
-                  ],
-                ),
-              ],
-            ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.notifications, color: Colors.black),
+                    onPressed: () {},
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
-
-
-      body: SafeArea(
-        child: Column(
-          children: [
-            const SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SizedBox(
-                  width: 200,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromRGBO(158, 17, 15, 1),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      padding: const EdgeInsets.symmetric(vertical: 15),
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        eventosActivos = fetchEventosActivos(); 
-                        vistaActual = "eventos";
-                      });
-                    },
-                    child: const Text(
-                      'Eventos Disponibles',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 10),
-                SizedBox(
-                  width: 200,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromRGBO(95, 95, 95, 1),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      padding: const EdgeInsets.symmetric(vertical: 15),
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        vistaActual = "misEventos";
-                      });
-                    },
-                    child: const Text(
-                      'Mis Eventos',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-            Expanded(
-              child: vistaActual == "eventos"
-                  ? _buildEventosList()
-                  : const Center(child: Text("Aún no hay eventos registrados")),
-            ),
-          ],
-        ),
       ),
+      body: _selectedIndex == 0 ? _buildEventosList() : const Center(child: Text("Vista no disponible")),
 
-      
-      // NavigationBar
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 20),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(50),
           child: GNav(
-            onTabChange: (index) {
-              setState(() {
-                if (index == 0) { // Eventos
-                  vistaActual = "eventos";
-                } else if (index == 1) { // Reservas
-                  vistaActual = "reservas"; // Asumiendo que esto manejará otra vista
-                } else if (index == 2) { // Equipos
-                  vistaActual = "equipos"; // Asumiendo que esto manejará otra vista
-                } else if (index == 3) { // Perfil
-                  vistaActual = "perfil"; // Actualizar la vistaActual
-                  // Navegar a la página del perfil
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => PerfilPage(emailUsuario: widget.email),
-                    ),
-                  );
-                }
-              });
-            },
             backgroundColor: const Color.fromRGBO(158, 17, 15, 1),
             color: Colors.white,
             activeColor: const Color.fromRGBO(158, 17, 15, 1),
             tabBackgroundColor: Colors.white,
             gap: 12,
             padding: const EdgeInsets.all(22),
+            selectedIndex: _selectedIndex,
+            onTabChange: _onTabSelected,
             tabs: const [
               GButton(icon: Icons.calendar_today, text: 'Eventos'),
               GButton(icon: Icons.tab, text: 'Reservas'),
-              GButton(icon: Icons.computer, text: 'Equipos'),
               GButton(icon: Icons.person, text: 'Perfil'),
             ],
           ),
         ),
       ),
-
     );
   }
 }

@@ -1,22 +1,22 @@
 import 'dart:convert';
+import 'package:fico_app/ListarEventosAdmin.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'CambiarContra.dart'; 
-import 'HomePage.dart';
-import 'VisualizarCubiculosDisponibles.dart';
+import 'VisualizarCubiculosAdmin.dart';
 import 'login_page.dart'; // Importa tu página de login
 
-class PerfilPage extends StatefulWidget {
+class PerfilAdminPage extends StatefulWidget {
   final String emailUsuario;
 
-  const PerfilPage({Key? key, required this.emailUsuario}) : super(key: key);
+  const PerfilAdminPage({Key? key, required this.emailUsuario}) : super(key: key);
 
   @override
   _PerfilPageState createState() => _PerfilPageState();
 }
 
-class _PerfilPageState extends State<PerfilPage> {
+class _PerfilPageState extends State<PerfilAdminPage> {
   int _selectedIndex = 3;
   String vistaActual = "Perfil";
   String? nombreUsuario;
@@ -224,23 +224,23 @@ class _PerfilPageState extends State<PerfilPage> {
         child: ClipRRect(
           borderRadius: BorderRadius.circular(50),
           child: GNav(
-            selectedIndex: 2, // Perfil como seleccionado
+            selectedIndex: 3, // Perfil como seleccionado
             onTabChange: (index) {
               if (index == 0) { // Eventos
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => HomePage(email: widget.emailUsuario),
+                    builder: (context) => ListarEventAdmin(email: widget.emailUsuario),
                   ),
                 );
               } else if (index == 1) { // Reservas
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => VisualizarCubiculosDisponibles(emailUsuario: widget.emailUsuario),
+                    builder: (context) => VisualizarCubiculosAdmin(emailUsuario: widget.emailUsuario),
                   ),
                 );
-              } else if (index == 2) { // Perfil
+              } else if (index == 3) { // Perfil
                 setState(() {
                   // Mantener la selección en Perfil
                 });
@@ -254,7 +254,8 @@ class _PerfilPageState extends State<PerfilPage> {
             padding: const EdgeInsets.all(22),
             tabs: const [
               GButton(icon: Icons.calendar_today, text: 'Eventos'),
-              GButton(icon: Icons.tab, text: 'Reservas'),
+              GButton(icon: Icons.meeting_room, text: 'Cubículos'),
+              GButton(icon: Icons.computer, text: 'Equipos'),
               GButton(icon: Icons.person, text: 'Perfil'),
             ],
           ),
