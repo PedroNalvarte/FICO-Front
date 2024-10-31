@@ -5,7 +5,8 @@ import 'dart:convert';
 import 'Perfil.dart';
 import 'VisualizarCubiculosDisponibles.dart';
 import 'EventDetailsPage.dart';
-import 'Evento.dart'; // Asegúrate de que este import es correcto
+import 'Evento.dart';
+import 'SolicitarEvento.dart'; // Importa tu página de SolicitarEvento
 
 class HomePage extends StatefulWidget {
   final String email;
@@ -19,6 +20,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   late Future<List<Evento>> eventosActivos;
   int _selectedIndex = 0;
+  bool _showMisEventos = false; // Controlar qué botón está seleccionado
 
   @override
   void initState() {
@@ -142,7 +144,6 @@ class _HomePageState extends State<HomePage> {
         toolbarHeight: 150,
         flexibleSpace: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 20.0),
-
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
@@ -166,11 +167,90 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
-      body: _selectedIndex == 0 ? _buildEventosList() : const Center(child: Text("Vista no disponible")),
+body: Column(
+  children: [
+    // Sección de botones "Eventos" y "Mis Eventos"
+    Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            child: ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  _showMisEventos = false; // Cambia a "Eventos"
+                });
+              },
+              child: Text(
+                'Eventos Disponibles',
+                style: TextStyle(color: Colors.white), // Texto en blanco
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: _showMisEventos ? Colors.grey : Color.fromRGBO(158, 17, 15, 1), // Cambia de color según el estado
+                padding: EdgeInsets.symmetric(vertical: 15), // Ajusta la altura
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20), // Bordes redondeados
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: 8), // Espacio entre botones
+          Expanded(
+            child: ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  _showMisEventos = true; // Cambia a "Mis Eventos"
+                });
+              },
+              child: Text(
+                'Mis Eventos',
+                style: TextStyle(color: Colors.white), // Texto en blanco
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: !_showMisEventos ? Colors.grey : Color.fromRGBO(158, 17, 15, 1), // Cambia de color según el estado
+                padding: EdgeInsets.symmetric(vertical: 15), // Ajusta la altura
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20), // Bordes redondeados
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    ),
+    Expanded(
+      child: _selectedIndex == 0 ? _buildEventosList() : const Center(child: Text("Vista no disponible")),
+    ),
+  ],
+),
+
+
+
+
+      // Floating Action Button
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(right: 20, bottom: 120),
+        child: Align(
+          alignment: Alignment.bottomRight,
+          child: FloatingActionButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SolicitarEvento(), // Navega a la página SolicitarEvento
+                ),
+              );
+            },
+            child: Icon(Icons.message, color: Colors.white), // Cambiar el ícono a uno de solicitar
+            backgroundColor: Color.fromRGBO(158, 17, 15, 1),
+            shape: CircleBorder(),
+          ),
+        ),
+      ),
 
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 20.0),
-
         child: ClipRRect(
           borderRadius: BorderRadius.circular(50),
           child: GNav(

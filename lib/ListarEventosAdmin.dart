@@ -1,3 +1,4 @@
+import 'package:fico_app/VerSolicitudesEventos.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:http/http.dart' as http;
@@ -6,7 +7,7 @@ import 'RegistrarEvento.dart'; // Asegúrate de que este archivo exista
 import 'PerfilAdmin.dart';
 import 'EliminarEvento.dart';
 import 'VisualizarCubiculosAdmin.dart';
-
+import 'VerSolicitudesEventos.dart';
 class Evento {
   final int idEvento;
   final String nombreEvento;
@@ -267,6 +268,14 @@ class _ListarEventAdminState extends State<ListarEventAdmin> {
                     builder: (context) => VisualizarCubiculosAdmin(emailUsuario: widget.email),
                   ),
                 );
+              
+              } else if (index == 2) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => VerSolicitudesEventos(),
+                  ),
+                );
               }
             },
             backgroundColor: const Color.fromRGBO(158, 17, 15, 1),
@@ -278,7 +287,7 @@ class _ListarEventAdminState extends State<ListarEventAdmin> {
             tabs: const [
               GButton(icon: Icons.calendar_today, text: 'Eventos'),
               GButton(icon: Icons.meeting_room, text: 'Cubículos'),
-              GButton(icon: Icons.computer, text: 'Equipos'),
+              GButton(icon: Icons.computer, text: 'Solicitudes'),
               GButton(icon: Icons.person, text: 'Perfil'),
             ],
           ),
