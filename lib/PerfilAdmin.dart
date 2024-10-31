@@ -255,7 +255,6 @@ class _PerfilPageState extends State<PerfilAdminPage> {
             tabs: const [
               GButton(icon: Icons.calendar_today, text: 'Eventos'),
               GButton(icon: Icons.meeting_room, text: 'Cubículos'),
-              GButton(icon: Icons.computer, text: 'Equipos'),
               GButton(icon: Icons.person, text: 'Perfil'),
             ],
           ),
