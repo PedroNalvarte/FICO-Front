@@ -1,10 +1,13 @@
 import 'dart:convert';
 import 'package:fico_app/ListarEventosAdmin.dart';
 import 'package:fico_app/RegistrarCubiculos.dart';
+import 'package:fico_app/DetallesCubiculosPage.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'PerfilAdmin.dart';
+import 'DetallesCubiculosPage.dart';
+
 
 class Cubiculo {
   final int id;
@@ -89,6 +92,15 @@ class _VisualizarCubiculosAdminState extends State<VisualizarCubiculosAdmin> {
     }
   }
 
+  void _verDetallesCubiculo(int idCubiculo) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => DetallesCubiculosPage(idCubiculo: idCubiculo),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -114,9 +126,7 @@ class _VisualizarCubiculosAdminState extends State<VisualizarCubiculosAdmin> {
                   ),
                   IconButton(
                     icon: const Icon(Icons.notifications, color: Colors.black),
-                    onPressed: () {
-                      // Lógica para notificaciones
-                    },
+                    onPressed: () {},
                   ),
                 ],
               ),
@@ -144,35 +154,38 @@ class _VisualizarCubiculosAdminState extends State<VisualizarCubiculosAdmin> {
                   itemCount: cubiculos.length,
                   itemBuilder: (context, index) {
                     final cubiculo = cubiculos[index];
-                    return Card(
-                      elevation: 5,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            Icon(Icons.meeting_room, color: const Color.fromRGBO(158, 17, 15, 1), size: 80),
-                            Text(
-                              cubiculo.nombre,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black87,
+                    return InkWell(
+                      onTap: () => _verDetallesCubiculo(cubiculo.id),
+                      child: Card(
+                        elevation: 5,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              Icon(Icons.meeting_room, color: const Color.fromRGBO(158, 17, 15, 1), size: 80),
+                              Text(
+                                cubiculo.nombre,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black87,
+                                ),
                               ),
-                            ),
-                            SizedBox(height: 8),
-                            Text(
-                              'Capacidad: ${cubiculo.capacidad} personas',
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Colors.grey[700],
+                              SizedBox(height: 8),
+                              Text(
+                                'Capacidad: ${cubiculo.capacidad} personas',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.grey[700],
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     );
@@ -189,7 +202,7 @@ class _VisualizarCubiculosAdminState extends State<VisualizarCubiculosAdmin> {
                   showDialog(
                     context: context,
                     builder: (BuildContext context) {
-                      return RegistrarCubiculo(); // Llama al pop-up de registro
+                      return RegistrarCubiculo();
                     },
                   );
                 },
@@ -245,8 +258,6 @@ class _VisualizarCubiculosAdminState extends State<VisualizarCubiculosAdmin> {
                     builder: (context) => VisualizarCubiculosAdmin(emailUsuario: widget.emailUsuario),
                   ),
                 );
-              } else if (index == 2) {
-                // Si tienes una vista de Equipos, maneja la navegación aquí
               } else if (index == 3) {
                 Navigator.pushReplacement(
                   context,
@@ -259,7 +270,6 @@ class _VisualizarCubiculosAdminState extends State<VisualizarCubiculosAdmin> {
             tabs: const [
               GButton(icon: Icons.calendar_today, text: 'Eventos'),
               GButton(icon: Icons.meeting_room, text: 'Cubículos'),
-              GButton(icon: Icons.computer, text: 'Equipos'), // Si tienes una vista de equipos
               GButton(icon: Icons.person, text: 'Perfil'),
             ],
           ),
