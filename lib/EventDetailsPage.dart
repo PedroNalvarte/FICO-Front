@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'Evento.dart';  // Asegúrate de que esta es la ruta correcta
+import 'CompraEntradaPage.dart';  // Asegúrate de que esta es la ruta correcta
 
 class EventDetailsPage extends StatelessWidget {
   final Evento evento;
@@ -12,6 +13,7 @@ class EventDetailsPage extends StatelessWidget {
       appBar: AppBar(
         title: Text(evento.nombreEvento),
         centerTitle: true,
+        backgroundColor: Colors.redAccent,
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -25,19 +27,54 @@ class EventDetailsPage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text('Lugar: ${evento.lugar}', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-                  Text('Fecha: ${evento.fechaFormateada}', style: TextStyle(fontSize: 18)),
-                  Text('Hora: ${evento.hora}', style: TextStyle(fontSize: 18)),
-                  Text('Aforo: ${evento.aforo}', style: TextStyle(fontSize: 18)),
-                  Text('Costo: S/.${evento.costo.toStringAsFixed(2)}', style: TextStyle(fontSize: 18)),
-                  Text('Entradas Vendidas: ${evento.entradasVendidas}', style: TextStyle(fontSize: 18)),
+                  Text(
+                    'Lugar: ${evento.lugar}',
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 10),
+                  Text(
+                    'Fecha: ${evento.fechaFormateada}',
+                    style: TextStyle(fontSize: 18),
+                  ),
+                  SizedBox(height: 5),
+                  Text(
+                    'Hora: ${evento.hora}',
+                    style: TextStyle(fontSize: 18),
+                  ),
+                  SizedBox(height: 5),
+                  Text(
+                    'Aforo: ${evento.aforo}',
+                    style: TextStyle(fontSize: 18),
+                  ),
+                  SizedBox(height: 5),
+                  Text(
+                    'Costo: S/.${evento.costo.toStringAsFixed(2)}',
+                    style: TextStyle(fontSize: 18),
+                  ),
+                  SizedBox(height: 5),
+                  Text(
+                    'Entradas Vendidas: ${evento.entradasVendidas}',
+                    style: TextStyle(fontSize: 18),
+                  ),
                   SizedBox(height: 20),
-                  Text('Equipamiento Necesario: ${evento.equipoNecesario.join(', ')}', style: TextStyle(fontSize: 18)),
+                  Text(
+                    'Equipamiento Necesario: ${evento.equipoNecesario.join(', ')}',
+                    style: TextStyle(fontSize: 18),
+                  ),
                   SizedBox(height: 30),
                   Center(
                     child: ElevatedButton(
                       onPressed: () {
-                        // Aquí va la lógica para la compra de entradas
+                        // Navega a la pantalla de compra de entrada
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => CompraEntradaPage(
+                              idEvento: evento.idEvento,
+                              nombreEvento: evento.nombreEvento,
+                            ),
+                          ),
+                        );
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.redAccent, // Color de fondo
