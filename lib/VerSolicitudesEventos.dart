@@ -30,8 +30,8 @@ class SolicitudEvento {
       lugar: json['lugar'],
       aforo: json['aforo'],
       costo: double.tryParse(json['costo'].toString()) ?? 0.0,
-      equipoNecesario: (json['equipo_necesario'] is List) 
-          ? (json['equipo_necesario'] as List).join(', ') 
+      equipoNecesario: (json['equipo_necesario'] is List)
+          ? (json['equipo_necesario'] as List).join(', ')
           : '',
       estado: json['estado'],
       fecha: json['date'],
@@ -81,31 +81,30 @@ class _VerSolicitudesEventosState extends State<VerSolicitudesEventos> {
   }
 
   Future<void> _aceptarEvento(int id) async {
-  const String apiUrl = 'https://fico-back.onrender.com/events/acceptEvent';
+    const String apiUrl = 'https://fico-back.onrender.com/events/acceptEvent';
 
-  try {
-    final response = await http.put(Uri.parse('$apiUrl/$id')); // Asegúrate de que $id sea correcto
+    try {
+      final response = await http.put(Uri.parse('$apiUrl/$id')); // Asegúrate de que $id sea correcto
 
-    if (response.statusCode == 200 || response.statusCode == 201) {
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        setState(() {
+          final responseBody = json.decode(response.body);
+          mensajeError = responseBody.containsKey('Success')
+              ? responseBody['Success']
+              : 'Evento aceptado exitosamente';
+        });
+        _obtenerSolicitudes(); // Actualizar la lista después de aceptar
+      } else {
+        setState(() {
+          mensajeError = 'Error al aceptar el evento: ${response.statusCode}';
+        });
+      }
+    } catch (e) {
       setState(() {
-        final responseBody = json.decode(response.body);
-        mensajeError = responseBody.containsKey('Success') 
-            ? responseBody['Success'] 
-            : 'Evento aceptado exitosamente';
-      });
-      _obtenerSolicitudes(); // Actualizar la lista después de aceptar
-    } else {
-      setState(() {
-        mensajeError = 'Error al aceptar el evento: ${response.statusCode}';
+        mensajeError = 'Error de conexión: $e';
       });
     }
-  } catch (e) {
-    setState(() {
-      mensajeError = 'Error de conexión: $e';
-    });
   }
-}
-
 
   Future<void> _rechazarEvento(int id) async {
     const String apiUrl = 'https://fico-back.onrender.com/events/denyEvent';
