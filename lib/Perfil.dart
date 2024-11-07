@@ -24,6 +24,8 @@ class _PerfilPageState extends State<PerfilPage> {
   String? emailUsuario;
   String? passwordUsuario;
   String? avatarUrl;
+  String? carreraAcad; // Añadido para carrera académica
+  int? ciclo; // Añadido para ciclo
   bool isLoading = true;
   String error = '';
 
@@ -49,6 +51,8 @@ class _PerfilPageState extends State<PerfilPage> {
           emailUsuario = data['email'];
           passwordUsuario = data['password'];
           avatarUrl = data['avatar'];
+          carreraAcad = data['carrera_acad']; // Obtener carrera académica
+          ciclo = data['ciclo']; // Obtener ciclo
           isLoading = false;
         });
       } else if (response.statusCode == 404) {
@@ -116,7 +120,8 @@ class _PerfilPageState extends State<PerfilPage> {
                     Padding(
                       padding: const EdgeInsets.all(20.0),
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                       mainAxisAlignment: MainAxisAlignment.center, // Centrar el contenido verticalmente
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           CircleAvatar(
                             radius: 50,
@@ -143,6 +148,36 @@ class _PerfilPageState extends State<PerfilPage> {
                             controller: TextEditingController(text: apellidoUsuario ?? ''),
                             decoration: InputDecoration(
                               labelText: 'Apellido',
+                              labelStyle: TextStyle(color: Colors.grey[700]),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.grey[300]!, width: 1.0),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: const Color.fromRGBO(158, 17, 15, 1), width: 2.0),
+                              ),
+                            ),
+                            readOnly: true,
+                          ),
+                          SizedBox(height: 20),
+                          TextFormField(
+                            controller: TextEditingController(text: carreraAcad ?? ''),
+                            decoration: InputDecoration(
+                              labelText: 'Carrera Académica',
+                              labelStyle: TextStyle(color: Colors.grey[700]),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.grey[300]!, width: 1.0),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: const Color.fromRGBO(158, 17, 15, 1), width: 2.0),
+                              ),
+                            ),
+                            readOnly: true,
+                          ),
+                          SizedBox(height: 20),
+                          TextFormField(
+                            controller: TextEditingController(text: ciclo != null ? ciclo.toString() : ''),
+                            decoration: InputDecoration(
+                              labelText: 'Ciclo',
                               labelStyle: TextStyle(color: Colors.grey[700]),
                               enabledBorder: OutlineInputBorder(
                                 borderSide: BorderSide(color: Colors.grey[300]!, width: 1.0),
@@ -197,6 +232,7 @@ class _PerfilPageState extends State<PerfilPage> {
                             ),
                             readOnly: true,
                           ),
+                          
                           SizedBox(height: 30),
                           Center(
                             child: ElevatedButton(

@@ -68,6 +68,15 @@ class _ReservarCubiculoState extends State<ReservarCubiculo> {
       });
       return;
     }
+
+    // Verifica si alguna de las horas en el rango está ocupada
+    final horasEnRango = _calcularHorasEnRango();
+    if (horasEnRango.any((hora) => horasReservadas.contains(hora))) {
+      // Si hay horas ocupadas, muestra una alerta
+      _mostrarAlertaHorasOcupadas();
+      return;
+    }
+
     final url = Uri.parse('https://fico-back.onrender.com/cubicles/reserveCubicle');
     final body = jsonEncode({
       'email': widget.emailUsuario,
@@ -86,7 +95,7 @@ class _ReservarCubiculoState extends State<ReservarCubiculo> {
       if (response.statusCode == 200 || response.statusCode == 201) {
         setState(() {
           _mensaje = data['message'] ?? 'Reserva creada exitosamente';
-          horasReservadas.addAll(_calcularHorasEnRango());
+          horasReservadas.addAll(horasEnRango); // Actualiza las horas reservadas
         });
         _mostrarDialogExito(); // Llamar al modal de éxito
       } else {
@@ -99,6 +108,26 @@ class _ReservarCubiculoState extends State<ReservarCubiculo> {
         _mensaje = 'Error de conexión: $e';
       });
     }
+  }
+
+  void _mostrarAlertaHorasOcupadas() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Error de Reserva"),
+          content: Text("No puedes reservar las horas seleccionadas, ya que están ocupadas."),
+          actions: [
+            TextButton(
+              child: Text("Cerrar"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void _mostrarDialogExito() {
@@ -123,8 +152,6 @@ class _ReservarCubiculoState extends State<ReservarCubiculo> {
 
   @override
   Widget build(BuildContext context) {
-    final horasEnRango = _calcularHorasEnRango();
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -184,16 +211,16 @@ class _ReservarCubiculoState extends State<ReservarCubiculo> {
               GridView.builder(
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
-                itemCount: 8,
+                itemCount: 12, // Cambiado para incluir desde las 9 AM hasta las 9 PM
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 4,
                   mainAxisSpacing: 10,
                   crossAxisSpacing: 10,
                 ),
                 itemBuilder: (context, index) {
-                  final hora = '${8 + index}:00:00';
+                  final hora = '${9 + index}:00:00'; // Cambiado para comenzar a las 9 AM
                   final reservada = horasReservadas.contains(hora);
-                  final enRangoSeleccionado = horasEnRango.contains(hora);
+                  final enRangoSeleccionado = _calcularHorasEnRango().contains(hora);
 
                   return GestureDetector(
                     onTap: reservada
