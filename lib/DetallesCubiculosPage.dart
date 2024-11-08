@@ -7,6 +7,8 @@ class ReservaDetalle {
   final int idUsuario;
   final String nombre;
   final String apellido;
+  final String carreraAcad;
+  final int ciclo;
   final String fechaReserva;
   final String horaReserva;
   final int cantidadHoras;
@@ -16,6 +18,8 @@ class ReservaDetalle {
     required this.idUsuario,
     required this.nombre,
     required this.apellido,
+    required this.carreraAcad,
+    required this.ciclo,
     required this.fechaReserva,
     required this.horaReserva,
     required this.cantidadHoras,
@@ -27,6 +31,8 @@ class ReservaDetalle {
       idUsuario: json['id_usuario'],
       nombre: json['nombre'],
       apellido: json['apellido'],
+      carreraAcad: json['carrera_acad'],
+      ciclo: json['ciclo'],
       fechaReserva: json['fecha_reserva'],
       horaReserva: json['hora_reserva'],
       cantidadHoras: json['cantidad_horas'],
@@ -96,14 +102,8 @@ class _DetallesCubiculosPageState extends State<DetallesCubiculosPage> {
             return Center(child: Text('No hay reservas para este cubículo.'));
           } else {
             final detalles = snapshot.data!;
-            return GridView.builder(
+            return ListView.builder(
               padding: EdgeInsets.all(8),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2, // Número de columnas
-                crossAxisSpacing: 8,
-                mainAxisSpacing: 8,
-                childAspectRatio: 4 / 3, // Relación de aspecto ajustada
-              ),
               itemCount: detalles.length,
               itemBuilder: (context, index) {
                 final detalle = detalles[index];
@@ -127,6 +127,16 @@ class _DetallesCubiculosPageState extends State<DetallesCubiculosPage> {
                           ),
                         ),
                         SizedBox(height: 6),
+                        Text(
+                          'Carrera: ${detalle.carreraAcad}',
+                          style: TextStyle(fontSize: 12, color: Colors.black54),
+                        ),
+                        SizedBox(height: 4),
+                        Text(
+                          'Ciclo: ${detalle.ciclo}',
+                          style: TextStyle(fontSize: 12, color: Colors.black54),
+                        ),
+                        SizedBox(height: 4),
                         Row(
                           children: [
                             Icon(Icons.date_range, color: Colors.black, size: 16),

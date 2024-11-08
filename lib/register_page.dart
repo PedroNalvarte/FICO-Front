@@ -17,6 +17,12 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
+  // Nuevos campos
+  String? _selectedGrade; // Carrera
+  int? _selectedPeriod; // Ciclo
+  final List<String> _grades = ['Ingeniería de Sistemas', 'Ingeniería Industrial', 'Arquitectura', 'Ingeniería Civil',  'Aeronáutica'];
+  final List<int> _periods = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
   Future<void> _register() async {
     final String nombre = _nombreController.text;
     final String apellido = _apellidoController.text;
@@ -36,6 +42,8 @@ class _RegisterPageState extends State<RegisterPage> {
           'apellido': apellido,
           'email': email,
           'password': password, // Contraseña sin encriptar
+          'grade': _selectedGrade,
+          'period': _selectedPeriod,
         }),
       );
 
@@ -128,16 +136,55 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
+  Widget _buildDropdownField(String label, List<dynamic> items, dynamic selectedItem, Function(dynamic) onChanged) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: InputDecorator(
+        decoration: InputDecoration(
+          labelText: label,
+          filled: true,
+          fillColor: Colors.white,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: BorderSide.none,
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: BorderSide(color: Colors.grey.shade400),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: BorderSide(color: Color.fromRGBO(158, 17, 15, 1)),
+          ),
+          contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+        ),
+        child: DropdownButtonHideUnderline(
+          child: DropdownButton<dynamic>(
+            value: selectedItem,
+            onChanged: onChanged,
+            isExpanded: true,
+            items: items.map<DropdownMenuItem<dynamic>>((dynamic value) {
+              return DropdownMenuItem<dynamic>(
+                value: value,
+                child: Text(value.toString()),
+              );
+            }).toList(),
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
           "Registrar Usuario",
-          style: TextStyle(color: Colors.white), // Cambia el color del texto a blanco
+          style: TextStyle(color: Colors.white),
         ),
-        backgroundColor: Color.fromRGBO(158, 17, 15, 1), // Fondo de la AppBar en color rojo oscuro
-        iconTheme: IconThemeData(color: Colors.white), // Cambia el color del icono de regresar a blanco
+        backgroundColor: Color.fromRGBO(158, 17, 15, 1),
+        iconTheme: IconThemeData(color: Colors.white),
       ),
       body: Center(
         child: SingleChildScrollView(
@@ -159,6 +206,16 @@ class _RegisterPageState extends State<RegisterPage> {
                 _buildTextField("Apellido", _apellidoController),
                 _buildTextField("Correo electrónico", _emailController),
                 _buildTextField("Contraseña", _passwordController, obscureText: true),
+                _buildDropdownField("Carrera", _grades, _selectedGrade, (value) {
+                  setState(() {
+                    _selectedGrade = value;
+                  });
+                }),
+                _buildDropdownField("Ciclo", _periods, _selectedPeriod, (value) {
+                  setState(() {
+                    _selectedPeriod = value;
+                  });
+                }),
                 SizedBox(height: 20),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
